@@ -1,15 +1,18 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes,
 from datetime import datetime
 import os
 from threading import Thread
 from flask import Flask
+import nest_asyncio          # <-- LINHA NOVA 1
+
+nest_asyncio.apply()         # <-- LINHA NOVA 2
 
 # TOKEN AGORA VEM DO RENDER
-TOKEN = "8652747282:AAEcdQzpf9bd0EzMdaGmKYeeGMCm22X2mXs"
+TOKEN = "8652747282:AAEcdQzpf9bd0EzMdaGmKYeeGMcM22X2mXs"
 
 # DADOS MOCKADOS - o PAIS_ATUAL vai mudar quando clica
-PAIS_ATUAL = "Afeganistão 🇦🇫"
+PAIS_ATUAL = "Afeganistão AF"
 SALDO = "0 USD"
 
 # ========== PARTE DOS SERVIÇOS - NÃO MEXER MAIS ==========
