@@ -391,11 +391,12 @@ def main():
     # 1. Mantém o servidor vivo no Render
     keep_alive()
 
-    # 2. Configura o bot com correção para Python 3.14
+    # 2. Configura o bot com a correção específica para Python 3.14
     from telegram.ext import Defaults
+    # Adicionando defaults(Defaults()) corrigimos o erro de AttributeError
     bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
 
-        # Handlers (comandos)
+    # Handlers (comandos)
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("recarregar", recarregar))
     bot_app.add_handler(CommandHandler("paises", paises))
