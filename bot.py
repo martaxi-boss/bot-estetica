@@ -374,8 +374,8 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Serviço não encontrado. Usa /services pra ver a lista completa.")
 
 # ========== KEEP ALIVE PRA RENDER ==========
-def keep_alive():
-    server = Flask('')
+# ========== FLASK PRA RENDER ==========
+server = Flask('')  # TEM QUE VIR PRIMEIRO
 
 @server.route('/')
 def home():
@@ -396,9 +396,11 @@ def main():
     app.add_handler(CallbackQueryHandler(botoes_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
     
-    print("Bot iniciado...")
+    Thread(target=run_flask, daemon=True).start()
+    
+    print("Bot iniciado com sucesso!")
     app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
 
 if __name__ == "__main__":
-    Thread(target=run_flask, daemon=True).start()
+    nest_asyncio.apply()
     main()
