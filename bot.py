@@ -388,13 +388,14 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== MAIN ==========
 def main():
-    # 1. Liga o servidor para o Render não dar erro de porta
+    # 1. Mantém o servidor vivo no Render
     keep_alive()
 
-    # 2. Configura o bot
-    bot_app = Application.builder().token(TOKEN).build()
+    # 2. Configura o bot com correção para Python 3.14
+    from telegram.ext import Defaults
+    bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
 
-    # teus handlers (mantive os nomes da tua foto)
+        # Handlers (comandos)
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("recarregar", recarregar))
     bot_app.add_handler(CommandHandler("paises", paises))
@@ -403,9 +404,8 @@ def main():
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
     bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_recebido))
 
-        # 3. O NOVO ARRANQUE (Obrigatório para o Render/Python 3.14)
+    # 3. NOVO ARRANQUE PARA O RENDER
     print("Bot ligado...")
-
     import asyncio
     try:
         loop = asyncio.get_event_loop()
@@ -419,4 +419,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
