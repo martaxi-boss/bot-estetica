@@ -376,12 +376,13 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ========== KEEP ALIVE PRA RENDER ==========
 def keep_alive():
     server = Flask('')
-    
-    @server.route('/')
-    def home():
-        return "Bot online"
-    
-    server.run(host='0.0.0', port=8080)
+
+@server.route('/')
+def home():
+    return "Bot online"
+
+def run_flask():
+    server.run(host='0.0.0.0', port=10000)
 
 # ========== MAIN ==========
 def main():
@@ -399,5 +400,5 @@ def main():
     app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
 
 if __name__ == "__main__":
-    Thread(target=keep_alive).start()
+    Thread(target=run_flask, daemon=True).start()
     main()
