@@ -405,22 +405,9 @@ def main():
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
     bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_recebido))
 
-        # 3. NOVO ARRANQUE PARA O RENDER
-    print("Bot ligado...")
-    import asyncio
-    
-    async def run_bot():
-        await bot_app.initialize()
-        await bot_app.updater.start_polling()
-        await bot_app.start()
-        # Mantém rodando sem usar o cleanup que dá erro
-        while True:
-            await asyncio.sleep(3600)
-
-    try:
-        asyncio.run(run_bot())
-    except KeyboardInterrupt:
-        pass
+       # 3. ARRANQUE ESTÁVEL
+    print("Bot ligado e estável...")
+    bot_app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":
     main()
