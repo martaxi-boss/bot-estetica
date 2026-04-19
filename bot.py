@@ -388,21 +388,35 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== MAIN ==========
 def main():
-    keep_alive() 
-    
-    # Aqui usamos 'bot_app' para não chocar com o 'app' do Flask lá do topo
+    # 1. Liga o servidor para o Render não dar erro de porta
+    keep_alive()
+
+    # 2. Configura o bot
     bot_app = Application.builder().token(TOKEN).build()
-    
+
+    # teus handlers (mantive os nomes da tua foto)
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("recarregar", recarregar))
     bot_app.add_handler(CommandHandler("paises", paises))
     bot_app.add_handler(CommandHandler("services", services))
     bot_app.add_handler(CommandHandler("suport", suport))
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
-    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
-    
+    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_recebido))
+
+        # 3. O NOVO ARRANQUE (Obrigatório para o Render/Python 3.14)
     print("Bot ligado...")
-    bot_app.run_polling()
+
+    import asyncio
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+    loop.create_task(bot_app.initialize())
+    loop.create_task(bot_app.updater.start_polling())
+    loop.run_forever()
 
 if __name__ == "__main__":
     main()
+
