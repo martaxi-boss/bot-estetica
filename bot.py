@@ -405,18 +405,22 @@ def main():
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
     bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_recebido))
 
-    # 3. NOVO ARRANQUE PARA O RENDER
+        # 3. NOVO ARRANQUE PARA O RENDER
     print("Bot ligado...")
     import asyncio
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    
+    async def run_bot():
+        await bot_app.initialize()
+        await bot_app.updater.start_polling()
+        await bot_app.start()
+        # Mantém rodando sem usar o cleanup que dá erro
+        while True:
+            await asyncio.sleep(3600)
 
-    loop.create_task(bot_app.initialize())
-    loop.create_task(bot_app.updater.start_polling())
-    loop.run_forever()
+    try:
+        asyncio.run(run_bot())
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     main()
