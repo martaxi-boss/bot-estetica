@@ -1,18 +1,12 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 from datetime import datetime
-import os
-from threading import Thread
-from flask import Flask
-import nest_asyncio          # <-- LINHA NOVA 1
 
-nest_asyncio.apply()         # <-- LINHA NOVA 2
-
-# TOKEN AGORA VEM DO RENDER
-TOKEN = "8652747282:AAEcdQzpf9bd0EzMdaGmKYeeGMcM22X2mXs"
+# COLA AQUI O TEU TOKEN DO BOTFATHER
+TOKEN = "8652747282:AAEmdESqGsFNcSY7C7GPPht64VNhx92oND4"
 
 # DADOS MOCKADOS - o PAIS_ATUAL vai mudar quando clica
-PAIS_ATUAL = "Afeganistão AF"
+PAIS_ATUAL = "Afeganistão 🇦🇫"
 SALDO = "0 USD"
 
 # ========== PARTE DOS SERVIÇOS - NÃO MEXER MAIS ==========
@@ -323,7 +317,7 @@ async def botoes_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=criar_teclado_servicos(1)
         )
     
-    # RECARREGAR CRYPTO - SEGUNDA TELA
+    # RECARREGAR CRYPTO - CORRIGIDO
     elif data == "recarregar_crypto":
         texto_crypto = (
             f"Obrigado por recarregar!\n\n"
@@ -373,17 +367,6 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text("Serviço não encontrado. Usa /services pra ver a lista completa.")
 
-# ========== KEEP ALIVE PRA RENDER ==========
-# ========== FLASK PRA RENDER ==========
-server = Flask('')  # TEM QUE VIR PRIMEIRO
-
-@server.route('/')
-def home():
-    return "Bot online"
-
-def run_flask():
-    server.run(host='0.0.0.0', port=10000)
-
 # ========== MAIN ==========
 def main():
     app = Application.builder().token(TOKEN).build()
@@ -396,11 +379,8 @@ def main():
     app.add_handler(CallbackQueryHandler(botoes_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
     
-    Thread(target=run_flask, daemon=True).start()
-    
-    print("Bot iniciado com sucesso!")
-    app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
+    print("Bot ligado...")
+    app.run_polling()
 
 if __name__ == "__main__":
-    nest_asyncio.apply()
     main()
