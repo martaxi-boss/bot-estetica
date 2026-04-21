@@ -387,32 +387,26 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Serviço não encontrado. Usa /services pra ver a lista completa.")
 
 # ========== MAIN ==========
-def main():
-    # 1. Mantém o servidor vivo no Render
-    keep_alive()
-
-    # 2. Configura o bot com a correção específica para Python 3.14
+def start_bot():
+    import asyncio
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    
     from telegram.ext import Defaults
-    # Adicionando defaults(Defaults()) corrigimos o erro de AttributeError
     bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
 
-    # Handlers (comandos)
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("recarregar", recarregar))
     bot_app.add_handler(CommandHandler("paises", paises))
     bot_app.add_handler(CommandHandler("services", services))
     bot_app.add_handler(CommandHandler("suport", suport))
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
-    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
+    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
 
-# 3. ARRANQUE ESTÁVEL
-
-
-       # 3. ARRANQUE ESTÁVEL
     print("Bot ligado e estável...")
-    bot_app.run_polling(drop_pending_updates=True)
+    bot_app.run_polling(stop_signals=None, drop_pending_updates=True)
 
 if __name__ == "__main__":
-    main()
-if __name__ == "__main__":
-    main()
+    Thread(target=start_bot, daemon=True).start()
+    port = int(os.environ.get('PORT', 7860))
+    print(f"Starting Flask on port {port}")
+    app.run(host="0.0.0.0", port=port)
