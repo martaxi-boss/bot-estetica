@@ -1,7 +1,10 @@
 import os
 from flask import Flask
 from threading import Thread
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 
+# --- SERVIDOR WEB ---
 app = Flask('')
 
 @app.route('/')
@@ -9,20 +12,20 @@ def home():
     return "Bot Online!"
 
 def run():
-    port = int(os.environ.get("PORT", 8080))
+    # Porta 7860 é obrigatória no Hugging Face
+    port = int(os.environ.get("PORT", 7860))
     app.run(host='0.0.0.0', port=port)
 
 def keep_alive():
     t = Thread(target=run)
+    t.daemon = True
     t.start()
 
-
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
-from datetime import datetime
+# Inicia o servidor
+keep_alive()
 
 # COLA AQUI O TEU TOKEN DO BOTFATHER
-TOKEN = "8652747282:AAEmdESqGsFNcSY7C7GPPht64VNhx92oND4"
+TOKEN = "8652747282:AAE7nTx_aEmckL8m_0txY-sdpB-Vs_Kq0J8"
 
 # DADOS MOCKADOS - o PAIS_ATUAL vai mudar quando clica
 PAIS_ATUAL = "Afeganistão 🇦🇫"
@@ -87,9 +90,7 @@ def texto_servicos():
     global PAIS_ATUAL, SALDO
     return f"""PAÍS ATUAL {PAIS_ATUAL} /paises
 SALDO {SALDO} 💰 /recarregar
-
 ESCOLHA O SERVIÇO PARA RECEBER SMS
-
 💡 Você também pode digitar o nome do serviço diretamente! Ex: WhatsApp"""
 
 # ========== PARTE DOS PAÍSES - NOVA ==========
@@ -236,7 +237,6 @@ def criar_teclado_paises(pagina):
 def texto_paises():
     global PAIS_ATUAL
     return f"""PAÍS ATUAL {PAIS_ATUAL}
-
 📊 185 países com números disponíveis, mude para:"""
 
 # ========== COMANDOS ==========
@@ -403,11 +403,16 @@ def main():
     bot_app.add_handler(CommandHandler("services", services))
     bot_app.add_handler(CommandHandler("suport", suport))
     bot_app.add_handler(CallbackQueryHandler(botoes_callback))
-    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_recebido))
+    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
+
+# 3. ARRANQUE ESTÁVEL
+
 
        # 3. ARRANQUE ESTÁVEL
     print("Bot ligado e estável...")
     bot_app.run_polling(drop_pending_updates=True)
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()
