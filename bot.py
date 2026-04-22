@@ -393,13 +393,25 @@ def home():
     return "Bot Estetica Online", 200
 
 # ========== MAIN ==========
+# ========== MAIN ==========
+def run_flask():
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host="0.0.0.0", port=port)
+
 async def setup():
+    await bot_app.bot.delete_webhook(drop_pending_updates=True)
+    await asyncio.sleep(1)
     await bot_app.bot.set_webhook(url=f"{URL}/{TOKEN}")
     await bot_app.initialize()
     await bot_app.start()
     print("Webhook setado. Bot vivo 24h.", flush=True)
 
 if __name__ == "__main__":
+    import threading
+    flask_thread = threading.Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+    
     asyncio.run(setup())
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host="0.0.0.0", port=port)
+    
+    flask_thread.join()
