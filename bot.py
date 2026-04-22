@@ -375,13 +375,23 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== MAIN ==========
 def start_bot():
+    import asyncio
+    import time
+    
+    print("Iniciando bot...", flush=True)
+    time.sleep(3)
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
     try:
-        print("Iniciando bot do Telegram...", flush=True)
-        import asyncio
-        asyncio.set_event_loop(asyncio.new_event_loop())
-        
         from telegram.ext import Defaults
         bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
+        
+        # MATA QUALQUER INSTÂNCIA FANTASMA
+        loop.run_until_complete(bot_app.bot.delete_webhook(drop_pending_updates=True))
+        print("Sessão antiga morta...", flush=True)
+        
         bot_app.add_handler(CommandHandler("start", start))
         bot_app.add_handler(CommandHandler("recarregar", recarregar))
         bot_app.add_handler(CommandHandler("paises", paises))
@@ -391,9 +401,10 @@ def start_bot():
         bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
 
         print("Bot ligado e estável...", flush=True)
-        bot_app.run_polling(stop_signals=None, drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
+        bot_app.run_polling(stop_signals=None, drop_pending_updates=True)
+        
     except Exception as e:
-        print(f"ERRO NO BOT: {e}", flush=True)
+        print(f"ERRO: {e}", flush=True)
 
 if __name__ == "__main__":
     Thread(target=start_bot, daemon=True).start()
