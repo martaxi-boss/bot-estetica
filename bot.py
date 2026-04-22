@@ -10,7 +10,7 @@ app = Flask(__name__)
 # COLA AQUI O TEU TOKEN DO BOTFATHER
 TOKEN = os.environ['TOKEN']
 URL = "https://bot-estetica.onrender.com"
-bot_app = Application.builder().token(TOKEN).build()
+bot_app = Application.builder().token(TOKEN).updater(None).build()  # <-- ADICIONA .updater(None)
 
 # ========== WEBHOOK ROUTE ==========
 @app.route(f'/{TOKEN}', methods=['POST'])
