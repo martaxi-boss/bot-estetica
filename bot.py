@@ -375,21 +375,25 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== MAIN ==========
 def start_bot():
-    import asyncio
-    asyncio.set_event_loop(asyncio.new_event_loop())
-    
-    from telegram.ext import Defaults
-    bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
-    bot_app.add_handler(CommandHandler("start", start))
-    bot_app.add_handler(CommandHandler("recarregar", recarregar))
-    bot_app.add_handler(CommandHandler("paises", paises))
-    bot_app.add_handler(CommandHandler("services", services))
-    bot_app.add_handler(CommandHandler("suport", suport))
-    bot_app.add_handler(CallbackQueryHandler(botoes_callback))
-    bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
+    try:
+        print("Iniciando bot do Telegram...", flush=True)
+        import asyncio
+        asyncio.set_event_loop(asyncio.new_event_loop())
+        
+        from telegram.ext import Defaults
+        bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
+        bot_app.add_handler(CommandHandler("start", start))
+        bot_app.add_handler(CommandHandler("recarregar", recarregar))
+        bot_app.add_handler(CommandHandler("paises", paises))
+        bot_app.add_handler(CommandHandler("services", services))
+        bot_app.add_handler(CommandHandler("suport", suport))
+        bot_app.add_handler(CallbackQueryHandler(botoes_callback))
+        bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
 
-    print("Bot ligado e estável...")
-    bot_app.run_polling(stop_signals=None, drop_pending_updates=True)
+        print("Bot ligado e estável...", flush=True)
+        bot_app.run_polling(stop_signals=None, drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
+    except Exception as e:
+        print(f"ERRO NO BOT: {e}", flush=True)
 
 if __name__ == "__main__":
     Thread(target=start_bot, daemon=True).start()
