@@ -378,42 +378,29 @@ async def texto_digitado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text("Serviço não encontrado. Usa /services pra ver a lista completa.")
 
-# ========== MAIN ==========
-def start_bot():
-    import asyncio
-    import time
-    
-    print("Iniciando bot...", flush=True)
-    time.sleep(3)
-    
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    
-    try:
-        from telegram.ext import Defaults
-        # ========== BOT TELEGRAM ==========
-        bot_app = Application.builder().token(TOKEN).build()
         
-        # MATA QUALQUER INSTÂNCIA FANTASMA
-        loop.run_until_complete(bot_app.bot.delete_webhook(drop_pending_updates=True))
-        print("Sessão antiga morta...", flush=True)
-        
-        # ========== REGISTRA HANDLERS ==========
-        bot_app.add_handler(CommandHandler("start", start))
-        bot_app.add_handler(CommandHandler("recarregar", recarregar))
-        bot_app.add_handler(CommandHandler("paises", paises))
-        bot_app.add_handler(CommandHandler("services", services))
-        bot_app.add_handler(CommandHandler("suport", suport))
-        bot_app.add_handler(CallbackQueryHandler(botoes_callback))
-        bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
+       # ========== REGISTRA HANDLERS ==========
+bot_app.add_handler(CommandHandler("start", start))
+bot_app.add_handler(CommandHandler("recarregar", recarregar))
+bot_app.add_handler(CommandHandler("paises", paises))
+bot_app.add_handler(CommandHandler("services", services))
+bot_app.add_handler(CommandHandler("suport", suport))
+bot_app.add_handler(CallbackQueryHandler(botoes_callback))
+bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, texto_digitado))
 
-        print("Bot ligado e estável...", flush=True)
-        bot_app.run_polling(stop_signals=None, drop_pending_updates=True)
-        
-    except Exception as e:
-        print(f"ERRO: {e}", flush=True)
+@app.route('/')
+def home():
+    return "Bot Estetica Online", 200
+
+# ========== MAIN ==========
+async def setup():
+    await bot_app.bot.set_webhook(url=f"{URL}/{TOKEN}")
+    await bot_app.initialize()
+    await bot_app.start()
+    print("Webhook setado. Bot vivo 24h.", flush=True)
 
 if __name__ == "__main__":
-    Thread(target=start_bot, daemon=True).start()# ========== WEBHOOK ROUTE ==========
+    import asyncio
+    asyncio.run(setup())
     port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
