@@ -1,19 +1,23 @@
 import os
-from flask import Flask
-from threading import Thread
+from flask import Flask, request
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
+import asyncio
 
 # --- SERVIDOR WEB ---
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Bot Estetica Online", 200
-
 # COLA AQUI O TEU TOKEN DO BOTFATHER
 TOKEN = os.environ['TOKEN']
+URL = "https://bot-estetica.onrender.com"
 
+# ========== WEBHOOK ROUTE ==========
+@app.route(f'/{TOKEN}', methods=['POST'])
+async def webhook():
+    update = Update.de_json(request.get_json(force=True), bot_app.bot)
+    await bot_app.process_update(update)
+    return 'ok', 200
+    
 # DADOS MOCKADOS - o PAIS_ATUAL vai mudar quando clica
 PAIS_ATUAL = "Afeganistão 🇦🇫"
 SALDO = "0 USD"
@@ -386,12 +390,14 @@ def start_bot():
     
     try:
         from telegram.ext import Defaults
-        bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
+        # ========== BOT TELEGRAM ==========
+        bot_app = Application.builder().token(TOKEN).build()
         
         # MATA QUALQUER INSTÂNCIA FANTASMA
         loop.run_until_complete(bot_app.bot.delete_webhook(drop_pending_updates=True))
         print("Sessão antiga morta...", flush=True)
         
+        # ========== REGISTRA HANDLERS ==========
         bot_app.add_handler(CommandHandler("start", start))
         bot_app.add_handler(CommandHandler("recarregar", recarregar))
         bot_app.add_handler(CommandHandler("paises", paises))
@@ -407,6 +413,6 @@ def start_bot():
         print(f"ERRO: {e}", flush=True)
 
 if __name__ == "__main__":
-    Thread(target=start_bot, daemon=True).start()
+    Thread(target=start_bot, daemon=True).start()# ========== WEBHOOK ROUTE ==========
     port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
