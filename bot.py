@@ -394,6 +394,7 @@ def home():
 
 # ========== MAIN ==========
 # ========== MAIN ==========
+# ========== MAIN ==========
 def run_flask():
     port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
@@ -403,7 +404,6 @@ async def setup():
     await asyncio.sleep(1)
     await bot_app.bot.set_webhook(url=f"{URL}/{TOKEN}")
     await bot_app.initialize()
-    # APAGA A LINHA DO bot_app.start() - ELA CAUSA O CONFLITO
     print("Webhook setado. Bot vivo 24h.", flush=True)
 
 if __name__ == "__main__":
