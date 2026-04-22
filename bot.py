@@ -9,7 +9,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "Bot Online!"
+    return "Bot Estetica Online", 200
 
 def run():
     # Porta 7860 é obrigatória no Hugging Face
