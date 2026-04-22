@@ -801,17 +801,6 @@ def run_flask():
     app.run(host="0.0.0.0", port=port)
 
 # ========== MAIN ==========
-async def setup():
-    await bot_app.bot.delete_webhook(drop_pending_updates=True)
-    await asyncio.sleep(2)
-    await bot_app.bot.set_webhook(url=f"{URL}/{TOKEN}")
-    await bot_app.initialize()
-    print("Webhook setado. Bot vivo 24h.", flush=True)
-
 if __name__ == "__main__":
-    # Seta o webhook PRIMEIRO
-    asyncio.run(setup())
-    
-    # Só depois abre o Flask - sem Thread
     port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
