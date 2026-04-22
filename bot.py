@@ -11,12 +11,6 @@ app = Flask(__name__)
 def home():
     return "Bot Estetica Online", 200
 
-if __name__ == "__main__":
-    Thread(target=start_bot, daemon=True).start()
-    port = int(os.environ.get('PORT', 10000))
-    print(f"Starting Flask on port {port}")
-    app.run(host="0.0.0.0", port=port)
-
 # COLA AQUI O TEU TOKEN DO BOTFATHER
 TOKEN = os.environ['TOKEN']
 
