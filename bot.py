@@ -804,5 +804,6 @@ def run_flask():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(bot_app.initialize())
+    asyncio.run(bot_app.start())
     port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
