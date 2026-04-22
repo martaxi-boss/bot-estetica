@@ -403,7 +403,7 @@ async def setup():
     await asyncio.sleep(1)
     await bot_app.bot.set_webhook(url=f"{URL}/{TOKEN}")
     await bot_app.initialize()
-    await bot_app.start()
+    # APAGA A LINHA DO bot_app.start() - ELA CAUSA O CONFLITO
     print("Webhook setado. Bot vivo 24h.", flush=True)
 
 if __name__ == "__main__":
