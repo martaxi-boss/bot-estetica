@@ -11,15 +11,11 @@ app = Flask(__name__)
 def home():
     return "Bot Estetica Online", 200
 
-def run():
-    # Porta 7860 é obrigatória no Hugging Face
-    port = int(os.environ.get("PORT", 7860))
-    app.run(host='0.0.0.0', port=port)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.daemon = True
-    t.start()
+if __name__ == "__main__":
+    Thread(target=start_bot, daemon=True).start()
+    port = int(os.environ.get('PORT', 10000))
+    print(f"Starting Flask on port {port}")
+    app.run(host="0.0.0.0", port=port)
 
 # Inicia o servidor
 keep_alive()
