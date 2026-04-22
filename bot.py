@@ -25,7 +25,7 @@ def keep_alive():
 keep_alive()
 
 # COLA AQUI O TEU TOKEN DO BOTFATHER
-TOKEN = "8652747282:AAE7nTx_aEmckL8m_0txY-sdpB-Vs_Kq0J8"
+TOKEN = os.environ['TOKEN']
 
 # DADOS MOCKADOS - o PAIS_ATUAL vai mudar quando clica
 PAIS_ATUAL = "Afeganistão 🇦🇫"
