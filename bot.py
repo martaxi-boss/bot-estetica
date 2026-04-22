@@ -402,7 +402,6 @@ def start_bot():
     bot_app.run_polling(stop_signals=None, drop_pending_updates=True)
 
 if __name__ == "__main__":
-    Thread(target=start_bot, daemon=True).start()
-    port = int(os.environ.get('PORT', 7860))
-    print(f"Starting Flask on port {port}")
+    Thread(target=main, daemon=True).start()  # <- troca start_bot por main
+    port = int(os.environ.get('PORT', 10000))
     app.run(host="0.0.0.0", port=port)
