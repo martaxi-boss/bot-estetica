@@ -17,9 +17,6 @@ if __name__ == "__main__":
     print(f"Starting Flask on port {port}")
     app.run(host="0.0.0.0", port=port)
 
-# Inicia o servidor
-keep_alive()
-
 # COLA AQUI O TEU TOKEN DO BOTFATHER
 TOKEN = os.environ['TOKEN']
 
@@ -389,7 +386,6 @@ def start_bot():
     
     from telegram.ext import Defaults
     bot_app = Application.builder().token(TOKEN).defaults(Defaults()).build()
-
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("recarregar", recarregar))
     bot_app.add_handler(CommandHandler("paises", paises))
